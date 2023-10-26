@@ -2,9 +2,27 @@ const Task = require('../models/taskModel');
 const asyncErrorHandler = require('../utils/asyncErrorHandler');
 const customeError = require('../utils/customeError');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 
 exports.index = async(req, res, next) => {
-    const tasks = await Task.find().populate('assigned_to').populate('assigned_by');
+    
+    const testToken = req.headers.authorization;
+    let token;
+    if(testToken && testToken.startsWith('bearer')){
+        token = testToken.split(' ')[1];
+    }
+    if(!token){
+        next(new customeError('you are not logged in!', 401))
+    }
+
+    const decoded = jwt.verify(token, process.env.SECRET_JWT_STR); 
+    const userId = decoded.id;
+
+    const tasks = await Task.find(
+        {
+            $or: [{ sender_id: userId }, { receiver_id: userId }]
+        }
+    ).populate('assigned_to').populate('assigned_by');
     res.json({
         total: tasks.length, 
         tasks
