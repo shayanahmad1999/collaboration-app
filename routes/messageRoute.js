@@ -1,9 +1,10 @@
 const express = require('express');
 const messageController = require('./../controllers/messageController');
+const userController = require('./../controllers/userController');
 
 const router = express.Router();
 
-router.route('/').get(messageController.index);
-router.route('/create').post(messageController.create);
+router.route('/').get(userController.protect, messageController.index);
+router.route('/create').post(userController.protect, messageController.create);
 
 module.exports = router;
