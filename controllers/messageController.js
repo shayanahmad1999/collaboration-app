@@ -61,3 +61,25 @@ exports.create = asyncErrorHandler (async(req, res, next) => {
         } 
     });
 });
+
+exports.details = (req, res, next) => {
+    const id = req.params.id;
+    Message.findById(id).populate('sender_id').populate('receiver_id')
+    .then((result) => {
+        res.render('messages/details', {message: result, title: 'Message Details'});
+    })
+    .catch((err) => {
+        res.status(404).render('404-page', {title: 'Message not found'});
+    });
+};
+
+exports.destroy = (req, res) => {
+    const id = req.params.id;
+    Message.findByIdAndDelete(id)
+    .then((result) => {
+        res.json({redirect: '/messages'});
+    })
+    .catch((err) => {
+        console.log(err);
+    });
+}

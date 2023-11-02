@@ -9,13 +9,15 @@
     <ul>
         <% messages.forEach(function(message) { %>
             <li>
-                <p><strong>Sender Name: </strong><%= message.sender_id.name %></p>
-                <p><strong>Sender Email: </strong><%= message.sender_id.email %></p>
+              <a href="/messages/details/<%= message._id%>" class="single">
+                <!-- <p><strong>Sender Name: </strong><%= message.sender_id.name %></p> -->
+                <!-- <p><strong>Sender Email: </strong><%= message.sender_id.email %></p> -->
                 <p><strong>Receiver Name: </strong><%= message.receiver_id.name %></p>
-                <p><strong>Receiver Email: </strong><%= message.receiver_id.email %></p>
+                <!-- <p><strong>Receiver Email: </strong><%= message.receiver_id.email %></p> -->
                 <p><strong>Message: </strong><%= message.message_content %></p>
                 <p><strong>Sent At: </strong><%= message.sent_at %></p>
                 <hr />
+              </a>
             </li>
         <% }); %>
     </ul>
