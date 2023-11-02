@@ -4,10 +4,10 @@
 <body>
     <%- include('./../partials/nav.ejs') %>
     <div class="details content">
-        <h1><%= message.receiver_id.name %></h1>
+        <h1><%= message.sender_id.name %></h1>
         <div class="content">
-            <h3><strong>Send to: </strong><%= message.sender_id.name %></h3>
-            <p><strong>Sender Email: </strong><%= message.sender_id.email %></p>
+            <h3><strong>Send to: </strong><%= message.receiver_id.name %></h3>
+            <p><strong>Sender Email: </strong><%= message.receiver_id.email %></p>
             <p><strong>Message: </strong><%= message.message_content %></p>
             <p><strong>Sent At: </strong><%= message.sent_at %></p>
         </div>
