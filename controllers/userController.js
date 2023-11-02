@@ -158,6 +158,10 @@ exports.protect = asyncErrorHandler(async (req, res, next) => {
 //     }
 //   };
 
+exports.forgotPasswordView = async (req, res, next) => {
+    res.render('users/forgotPassword', {user: req.user, title: 'Forgot Password'})
+}
+
 exports.forgotPassword = asyncErrorHandler(async (req, res, next) => {
     const user = await User.findOne({email: req.body.email});
     if(!user) {
@@ -187,6 +191,10 @@ exports.forgotPassword = asyncErrorHandler(async (req, res, next) => {
         return next(new customeError('there was an error please try again later', 500));
     }
 })
+
+exports.resetPasswordView = async (req, res, next) => {
+    res.render('users/resetPassword', {user: req.user, title: 'Reset Password'})
+}
 
 exports.resetPassword = asyncErrorHandler(async(req, res, next) => {
   const token = crypto.createHash('sha256').update(req.params.token).digest('hex');
