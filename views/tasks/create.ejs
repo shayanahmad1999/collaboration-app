@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('./../partials/head.ejs') %>
+    <body>
+        <%- include('./../partials/nav.ejs') %>
+        <div class="blogs content">
+            <h1>Message</h1>
+            <h2>Create</h2>
+        </div>
+        <div class="create-blog content">
+            <div id="errorMessage" style="color: red;"></div>
+            <form id="signupForm">
+                <label for>Assign by</label>
+                <input type="text" name="assigned_by" value="<%= user.id %>" readonly id="sendby" placeholder="Send by">
+                <div class="assigned_by error" id="assigned_byError"></div>
+                <label for>Assign to</label>
+                <select name="assigned_to" id="">
+                    <% users.forEach(element => { %>
+                    <option value="<%=element.id %>"><%=element.name %></option>
+                    <% }); %>
+                </select>
+                <div class="assigned_to error" id="assigned_toError"></div>
+                <label for>Task name</label>
+                <input type="text" name="task_name" id="task_name"
+                    placeholder="Task name">
+                <div class="task_name error" id="task_nameError"></div>
+                <label for>Description</label>
+                <input type="text" name="description" id="description"
+                    placeholder="Description">
+                <div class="description error" id="descriptionError"></div>
+                <label for>Due dtae</label>
+                <input type="date" name="due_date" id="due_date"
+                    placeholder="Due date">
+                <div class="due_date error" id="due_dateError"></div>
+                <button>Submit</button>
+
+            </form>
+        </div>
+        <%- include('./../partials/footer.ejs') %>
+
+
+        <script>
+            const form = document.querySelector('form');
+            form.addEventListener('submit', async function(event) {
+                event.preventDefault();
+
+                const task_name = form.task_name.value;
+                const assigned_by = form.assigned_by.value;
+                const assigned_to = form.assigned_to.value;
+                const description = form.description.value;
+                const due_date = form.due_date.value;
+
+    
+                try {
+
+
+                    const res = await fetch('/tasks/create', {
+                method: 'POST',
+                body: JSON.stringify({task_name, assigned_by, assigned_to, description, due_date}),
+                headers: {'Content-Type': 'application/json'}
+            });
+    
+                    const data = await res.json();
+    
+                    if (res.ok) {
+                        this.reset();
+                        
+                        document.getElementById('errorMessage').innerText = '';
+                        location.assign('/tasks');
+                    } else {
+                        const errorMessage = data.message; // Assuming the server sends back an error message
+                        document.getElementById('errorMessage').innerText = errorMessage;
+                    }
+                } catch (error) {
+                    console.error('Error occurred during signup:', error);
+                    document.getElementById('errorMessage').innerText = 'An error occurred during signup. Please try again later.';
+                }
+            });
+        </script>
+    </body>
+</html>

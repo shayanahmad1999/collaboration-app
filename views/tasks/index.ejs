@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <%- include('./../partials/head.ejs') %>
+</head>
+<body>
+  <%- include('./../partials/nav.ejs') %>
+    <h2>Total Tasks: <%= total %></h2>
+    <ul>
+        <% tasks.forEach(function(task) { %>
+            <li>
+              <a href="/tasks/details/<%= task._id%>" class="single">
+                <p><strong>Assign to: </strong><%= task.assigned_to.name %></p>
+                <p><strong>Task: </strong><%= task.task_name %></p>
+                <p><strong>Due date: </strong><%= task.due_date %></p>
+                <hr />
+              </a>
+            </li>
+        <% }); %>
+    </ul>
+</body>
+<%- include('./../partials/footer.ejs') %>
+<script>
+    <% if (successMessage) { %>
+      document.addEventListener('DOMContentLoaded', function () {
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: 'Action successfully',
+          showConfirmButton: false,
+          timer: 1500
+        })
+      });
+    <% }  %>
+  </script>
+</html>

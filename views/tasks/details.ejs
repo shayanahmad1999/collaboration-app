@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('./../partials/head.ejs') %>
+  <body>
+    <%- include('./../partials/nav.ejs') %>
+    <div class="details content">
+      <h1><%= task.assigned_by.name %></h1>
+      <div class="content">
+        <h3><strong>Assign to: </strong><%= task.assigned_to.name %></h3>
+        <p><strong>Assign Email: </strong><%= task.assigned_to.email %></p>
+        <p><strong>Task: </strong><%= task.task_name %></p>
+        <p><strong>Description: </strong><%= task.description %></p>
+        <p><strong>Due date: </strong><%= task.due_date %></p>
+      </div>
+      <a data-doc="<%= task._id %>" class="delete">
+        <img src="/trashcan.svg" alt="">
+      </a>
+    </div>
+    <%- include('./../partials/footer.ejs') %>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+      const trashcan = document.querySelector('a.delete');
+      trashcan.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            const endpoint = `/tasks/${trashcan.dataset.doc}`;
+            fetch(endpoint, {
+              method: 'DELETE',
+            })
+              .then((response) => response.json())
+              .then((data) => (window.location.href = data.redirect))
+              .catch((err) => {
+                console.log(err);
+              });
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
