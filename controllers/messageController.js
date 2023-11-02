@@ -1,4 +1,5 @@
 const Message = require('./../models/messageModel');
+const User = require('./../models/userModel');
 const asyncErrorHandler = require('../utils/asyncErrorHandler');
 const customeError = require('../utils/customeError');
 const mongoose = require('mongoose');
@@ -6,11 +7,13 @@ const jwt = require('jsonwebtoken');
 
 exports.index = async(req, res, next) => {
 
-    const testToken = req.headers.authorization;
-    let token;
-    if(testToken && testToken.startsWith('bearer')){
-        token = testToken.split(' ')[1];
-    }
+    // const testToken = req.headers.authorization;
+    // let token;
+    // if(testToken && testToken.startsWith('bearer')){
+    //     token = testToken.split(' ')[1];
+    // }
+    // if we use cookie-parser then the about code which i comment no need
+    const token = req.cookies.jwt;
     if(!token){
         next(new customeError('you are not logged in!', 401))
     }
@@ -23,10 +26,24 @@ exports.index = async(req, res, next) => {
             $or: [{ sender_id: userId }, { receiver_id: userId }]
         }
     ).populate('sender_id').populate('receiver_id');
-    res.json({
-        total: messages.length, 
-        messages
+
+    res.render('messages/index', { messages: messages, total: messages.length, title: 'Messages' });
+    // res.json({
+    //     total: messages.length, 
+    //     messages
+    // });
+}
+
+exports.createView =  async (req, res) => {
+   
+    const token = req.cookies.jwt;
+    const decoded = jwt.verify(token, process.env.SECRET_JWT_STR); 
+    const userId = decoded.id;
+    const user = await User.find({
+        $or: [{ _id: userId }]
     });
+    const users = await User.find({});
+    res.render('messages/create', {users: users, user: user, title: 'Create', user: req.user });
 }
 
 exports.create = asyncErrorHandler (async(req, res, next) => {

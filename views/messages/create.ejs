@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('./../partials/head.ejs') %>
+    <body>
+        <%- include('./../partials/nav.ejs') %>
+        <div class="blogs content">
+            <h1>Message</h1>
+            <h2>Create</h2>
+        </div>
+        <div class="create-blog content">
+            <div id="errorMessage" style="color: red;"></div>
+            <form id="signupForm">
+                <label for>Send by</label>
+                <input type="text" name="sender_id" value="<%= user.id %>" readonly id="sendby" placeholder="Send by">
+                <div class="sendby error" id="sendby"></div>
+                <label for>Send to</label>
+                <select name="receiver_id" id="">
+                    <% users.forEach(element => { %>
+                    <option value="<%=element.id %>"><%=element.name %></option>
+                    <% }); %>
+                </select>
+                <div class="sendto error" id="sendto"></div>
+                <label for>Message</label>
+                <input type="text" name="message_content" id="message"
+                    placeholder="Message">
+                <div class="password error" id="passwordError"></div>
+                <button>Submit</button>
+
+            </form>
+        </div>
+        <%- include('./../partials/footer.ejs') %>
+
+
+        <script>
+            const form = document.querySelector('form');
+            form.addEventListener('submit', async function(event) {
+                event.preventDefault();
+
+                const sender_id = form.sender_id.value;
+                const receiver_id = form.receiver_id.value;
+                const message_content = form.message_content.value;
+
+    
+                try {
+
+
+                    const res = await fetch('/messages/create', {
+                method: 'POST',
+                body: JSON.stringify({sender_id, receiver_id, message_content}),
+                headers: {'Content-Type': 'application/json'}
+            });
+    
+                    const data = await res.json();
+    
+                    if (res.ok) {
+                        this.reset();
+                        
+                        document.getElementById('errorMessage').innerText = '';
+                        location.assign('/messages');
+                    } else {
+                        const errorMessage = data.message; // Assuming the server sends back an error message
+                        document.getElementById('errorMessage').innerText = errorMessage;
+                    }
+                } catch (error) {
+                    console.error('Error occurred during signup:', error);
+                    document.getElementById('errorMessage').innerText = 'An error occurred during signup. Please try again later.';
+                }
+            });
+        </script>
+    </body>
+</html>

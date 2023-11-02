@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <%- include('./../partials/head.ejs') %>
+</head>
+<body>
+  <%- include('./../partials/nav.ejs') %>
+    <h2>Total Messages: <%= total %></h2>
+    <ul>
+        <% messages.forEach(function(message) { %>
+            <li>
+                <p><strong>Sender Name: </strong><%= message.sender_id.name %></p>
+                <p><strong>Sender Email: </strong><%= message.sender_id.email %></p>
+                <p><strong>Receiver Name: </strong><%= message.receiver_id.name %></p>
+                <p><strong>Receiver Email: </strong><%= message.receiver_id.email %></p>
+                <p><strong>Message: </strong><%= message.message_content %></p>
+                <p><strong>Sent At: </strong><%= message.sent_at %></p>
+                <hr />
+            </li>
+        <% }); %>
+    </ul>
+</body>
+<%- include('./../partials/footer.ejs') %>
+</html>
+
+<script>
+  // if we use the cookie-parser then no need to use the cmment code
+//     const token = localStorage.getItem('token'); // Assuming the token is stored in the localStorage
+// console.log('Token:', token)
+// fetch('/messages', {
+//   method: 'GET', // or any other HTTP method
+//   headers: {
+//     'Authorization': `bearer ${token}`,
+//     'Content-Type': 'application/json', 
+//   }
+// })
+
+//   .then(response => {
+//     if (!response.ok) {
+//       return response.json().then(error => Promise.reject(error));
+//     }
+//     return response.json();
+//   })
+//   .then(data => {
+//     // Handle successful response data here
+//   })
+//   .catch(error => {
+//     // Display the error message on the web page
+//     const errorMessage = document.getElementById('errorMessage');
+//     errorMessage.textContent = error.message;
+//   });
+
+
+  // fetch('http://127.0.0.1:3000/messages')
+  //       .then(response => response.json())
+  //       .then(data => {
+  //         const messageList = document.getElementById('message-list');
+  //         data.forEach(message => {
+  //           const listItem = document.createElement('li');
+  //           listItem.appendChild(document.createTextNode(message.message_content)); // Adjust this based on your user schema
+  //           messageList.appendChild(listItem);
+  //         });
+  //       })
+  //       .catch(error => console.error('Error:', error));
+
+</script>
