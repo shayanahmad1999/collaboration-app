@@ -21,9 +21,23 @@
             </li>
         <% }); %>
     </ul>
+    <script>
+      <% if (successMessage) { %>
+        document.addEventListener('DOMContentLoaded', function () {
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Action successfully',
+            showConfirmButton: false,
+            timer: 1500
+          })
+        });
+      <% }  %>
+    </script>
 </body>
 <%- include('./../partials/footer.ejs') %>
 </html>
+
 
 <script>
   // if we use the cookie-parser then no need to use the cmment code

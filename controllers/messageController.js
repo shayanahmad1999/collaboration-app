@@ -27,7 +27,9 @@ exports.index = async(req, res, next) => {
         }
     ).populate('sender_id').populate('receiver_id');
 
-    res.render('messages/index', { messages: messages, total: messages.length, title: 'Messages' });
+    const successMessage = [] ;
+
+    res.render('messages/index', {successMessage, messages: messages, total: messages.length, title: 'Messages' });
     // res.json({
     //     total: messages.length, 
     //     messages
