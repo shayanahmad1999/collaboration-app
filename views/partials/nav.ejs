@@ -1,10 +1,15 @@
 <nav>
     <div class="site-title">
-        <p>Collaboration App</p>
+        <% if(user) { %>
+            <a href="/users/profile">
+                <p><%= user.name %></p>
+            </a>
+        <% } else { %>
+            <p>Collaboration App</p>
+        <% } %>
     </div>
     <ul>
         <% if(user) { %>
-            <li><a href="/about">about page</a></li>
             <li><a href="/messages">Messages</a></li>
             <li><a href="/messages/create">Create Messages</a></li>
             <li><a href="#">Tasks</a></li>
