@@ -204,3 +204,14 @@ exports.resetPassword = asyncErrorHandler(async(req, res, next) => {
       token: logintoken
   });
 })
+
+exports.profile = (req, res, next) => {
+    const id = req.params.id;
+    User.findById(id)
+    .then((result) => {
+        res.render('users/profile', {user: result, title: 'Profile'});
+    })
+    .catch((err) => {
+        res.status(404).render('404-page', {title: 'Profile not found'});
+    });
+};
