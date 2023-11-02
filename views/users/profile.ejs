@@ -1,15 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
-<%- include('./../partials/head.ejs') %>
-<body>
-    <%- include('./../partials/nav.ejs') %>
-    <div class="details content">
-        <h1><%= user.name %></h1>
-        <div class="content">
-            <p><strong>Email: </strong><%= user.email %></p>
-            <p><strong>Created at: </strong><%= user.createdAt %></p>
+    <%- include('./../partials/head.ejs') %>
+    <style>
+    img{
+        border-radius: 50%; 
+        margin-left: 35%; 
+        margin-top: 50px; 
+        margin-bottom: 50px;
+    }
+</style>
+    <body>
+        <%- include('./../partials/nav.ejs') %>
+        <div class="details content">
+            <h1><%= user.name %></h1>
+            <div class="content">
+                <p><strong>Email: </strong><%= user.email %></p>
+                <p><strong>Created at: </strong><%= user.createdAt %></p>
+                <img width="20%" src="/images/<%= user.profileImage %>"
+                    alt="no-image">
+            </div>
+            <div class="create-blog content">
+                <div id="errorMessage" style="color: red;"></div>
+                <form action="/users/profile" method="post" id="signupForm"
+                    enctype="multipart/form-data">
+                    <input type="hidden" value="<%= user.id %>" name="userId">
+                    <label for>Profile image</label>
+                    <input type="file" name="file" id="file" required>
+                    <div class="file error"></div>
+                    <button>Upload</button>
+                </form>
+            </div>
         </div>
-    </div>
-    <%- include('./../partials/footer.ejs') %>
-</body>
+        <%- include('./../partials/footer.ejs') %>
+    </body>
+    <!-- <script>
+    const form = document.querySelector('form');
+    form.addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+        const userId = formData.get('userId');
+        // const id = form.userId.value;
+        // const file = form.file.value;
+
+        try {
+            const res = await fetch(`/users/profile/${userId}`, {
+            method: 'POST',
+            body: formData,
+            // body: JSON.stringify({file}),
+            headers: {'Content-Type': 'application/json'}
+        });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                this.reset();
+
+                document.getElementById('errorMessage').innerText = '';
+                location.assign('/messages');
+            } else {
+                const errorMessage = data.message;
+                document.getElementById('errorMessage').innerText = errorMessage;
+            }
+        } catch (error) {
+            console.error('Error occurred during upload:', error);
+            document.getElementById('errorMessage').innerText = 'An error occurred during upload. Please try again later.';
+        }
+    });
+</script> -->
 </html>

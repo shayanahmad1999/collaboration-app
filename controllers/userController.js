@@ -5,6 +5,8 @@ const customeError = require('../utils/customeError');
 const util = require('util');
 const sendEmail = require('../utils/email');
 const crypto = require('crypto');
+const multer = require('multer');
+const path = require('path');
 
 const signToken = id => {
     return jwt.sign({id}, process.env.SECRET_JWT_STR, {
@@ -230,3 +232,32 @@ exports.profile = (req, res, next) => {
         res.status(404).render('404-page', {title: 'Profile not found'});
     });
 };
+
+const storage = multer.diskStorage({
+    destination: 'public/images/',
+    filename: (req, file, cb) => {
+        return cb(null, `${Date.now()}${path.extname(file.originalname)}`)
+    },
+});
+const upload = multer({
+    storage: storage,
+}).single('file');
+
+exports.profileUpdate = asyncErrorHandler(async (req, res) => {
+    upload(req, res, async function(err) {
+
+        if (err) {
+            return res.status(400).json({ error: err.message });
+        }
+            const userId = req.body.userId;
+            const user = await User.findById(userId, {new: true, runValidators: true}); 
+
+            user.profileImage = req.file.filename; 
+            await user.save();
+
+            res.status(200).json({ 
+            message: 'Profile image updated successfully.',
+            photo: `http://127.0.0.1:3000/images/${req.file.filename}`
+        });
+    });
+});

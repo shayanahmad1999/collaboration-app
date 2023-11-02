@@ -15,5 +15,6 @@ router.route('/forgotPassword').post(userController.forgotPassword);
 router.route('/resetPassword').get(userController.resetPasswordView);
 router.route('/resetPassword/:token').post(userController.resetPassword);
 router.route('/profile/:id').get(userController.profile);
+router.route('/profile').post(userController.profileUpdate);
 
 module.exports = router;
