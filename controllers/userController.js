@@ -23,10 +23,21 @@ exports.users = async (req, res) => {
     });
 }
 
+exports.signupView = async (req, res) => {
+    res.render('users/signup', { title: 'Signup', user: req.user });
+}
+
+
 exports.signup = asyncErrorHandler(async(req, res, next) =>{
     const newUser = await User.create(req.body);
 
     const token = signToken(newUser._id);
+    // if we use cookie-parser
+    res.cookie('jwt', token, {httpOnly: true});
+    if(!req.body)
+    {
+        return next(new CustomError('Error creating a new user', 500));
+    }
 
     res.status(200).json({
         status: 'success',
@@ -35,7 +46,14 @@ exports.signup = asyncErrorHandler(async(req, res, next) =>{
             user: newUser
         } 
     });
+
 }); 
+
+
+
+exports.loginView = async (req, res) => {
+    res.render('users/index', { title: 'Login', user: req.user });
+}
 
 exports.login = asyncErrorHandler(async(req, res, next) => {
     const email = req.body.email;
@@ -54,6 +72,8 @@ exports.login = asyncErrorHandler(async(req, res, next) => {
     }
 
     const token = signToken(user._id);
+    // if we use cookie-parser
+    res.cookie('jwt', token, {httpOnly: true});
 
     res.status(200).json({
         status: 'success',
@@ -61,14 +81,24 @@ exports.login = asyncErrorHandler(async(req, res, next) => {
     });
 });
 
+exports.logout = (req, res) => {
+    res.cookie('jwt', '');
+    res.locals.user = null;
+    res.redirect('/users/login');
+}
 
 exports.protect = asyncErrorHandler(async (req, res, next) => {
-    // read the token and check if it exit 
-    const testToken = req.headers.authorization;
-    let token;
-    if(testToken && testToken.startsWith('bearer')){
-        token = testToken.split(' ')[1];
-    }
+    // read the token and check if it exit
+
+    // const testToken = req.headers.authorization;
+    // let token;
+    // if(testToken && testToken.startsWith('bearer')){
+    //     token = testToken.split(' ')[1];
+    // }
+    // console.log(token);
+
+    // if we use cookie-parser then the about code which i comment no need
+    const token = req.cookies.jwt;
     if(!token){
         next(new customeError('you are not logged in!', 401))
     }
@@ -78,6 +108,11 @@ exports.protect = asyncErrorHandler(async (req, res, next) => {
 
     // if the user exist
     const user = await User.findById(decodeToken.id);
+
+    // ::::::::::::::::::::::: //
+    // this code work like session 
+    res.locals.user = user;
+    // ::::::::::::::::::::::: //
 
     if(!user) {
         const error = new customeError('the user with given token does not exist!', 401);
@@ -95,6 +130,28 @@ exports.protect = asyncErrorHandler(async (req, res, next) => {
     req.user = user;
     next()
 });
+
+            // OR
+
+// exports.protect = async (req, res, next) => {
+//     try {
+//       const token = req.headers.authorization;
+  
+//       if (!token) {
+//         return res.status(401).json({ message: 'No token provided' });
+//       }
+  
+//       // Verify the token
+//       const decoded = jwt.verify(token, process.env.SECRET_JWT_STR);
+  
+//       // Add the user information to the request
+//       req.user = decoded;
+  
+//       next();
+//     } catch (error) {
+//       return res.status(401).json({ message: 'Invalid token' });
+//     }
+//   };
 
 exports.forgotPassword = asyncErrorHandler(async (req, res, next) => {
     const user = await User.findOne({email: req.body.email});
