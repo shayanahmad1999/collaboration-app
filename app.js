@@ -5,6 +5,7 @@ const messageRoute = require('./routes/messageRoute');
 const taskRoute = require('./routes/taskRoute');
 const customeError = require('./utils/customeError');
 const globalErrorHandler = require('./controllers/errorController');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
@@ -20,6 +21,9 @@ app.use(express.json());
  // static file middleware
 app.use(express.static('./public'));
 
+// cookie middleware
+app.use(cookieParser());
+
 // routes
 // user route
 app.use('/users', userRoute);
@@ -29,6 +33,19 @@ app.use('/messages', messageRoute);
 
 // task route
 app.use('/tasks', taskRoute);
+
+app.get('/about', (req, res) => {
+   res.render('about', {title: 'About', user: req.user});
+});
+
+app.get('/', (req, res) => {
+   res.render('users/index', {title: 'Login', user: req.user});
+});
+
+
+app.use((req, res) => {
+   res.status(404).render('404-page', {title: '404-page', user: req.user});
+});
 
 // 404-page 
 app.all('*', (req, res, next) => {
