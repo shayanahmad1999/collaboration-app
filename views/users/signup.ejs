@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('./../partials/head.ejs') %>
+    <body>
+        <%- include('./../partials/nav.ejs') %>
+        <div class="blogs content">
+            <h1>User</h1>
+            <h2>Create Users</h2>
+        </div>
+        <div class="create-blog content">
+            <div id="errorMessage" style="color: red;"></div>
+            <form id="signupForm">
+                <label for>Name</label>
+                <input type="text" name="name" id="name" placeholder="Name">
+                <div class="name error" id="nameError"></div>
+                <label for>Email</label>
+                <input type="email" name="email" id="email" placeholder="Email">
+                <div class="email error" id="emailError"></div>
+                <label for>Password</label>
+                <input type="password" name="password" id="password"
+                    placeholder="Password">
+                <div class="password error" id="passwordError"></div>
+                <label for>Confirm password</label>
+                <input type="password" name="confirmPassword"
+                    id="confirmPassword" placeholder="Confirm password">
+                <div class="confirmPassword error" id="confirmPasswordError"></div>
+                <button>Submit</button>
+
+            </form>
+        </div>
+        <%- include('./../partials/footer.ejs') %>
+
+
+        <script>
+            const form = document.querySelector('form');
+            form.addEventListener('submit', async function(event) {
+                event.preventDefault();
+                // const formData = new FormData(this);
+                const name = form.name.value;
+                const email = form.email.value;
+                const password = form.password.value;
+                const confirmPassword = form.confirmPassword.value;
+
+    
+                try {
+                    // const response = await fetch('/users/signup', {
+                    //     method: 'POST',
+                    //     body: formData
+                    // });
+
+                    const res = await fetch('/users/signup', {
+                method: 'POST',
+                body: JSON.stringify({name, email, password, confirmPassword}),
+                headers: {'Content-Type': 'application/json'}
+            });
+    
+                    const data = await res.json();
+    
+                    if (res.ok) {
+                        this.reset();
+                        // if we not use cookie-parser 
+                        // const token = data.token; // Retrieve the token from the response
+                        // localStorage.setItem('token', token); // Store the token in localStorage
+                        // ::::::::::::::::::::::
+                        
+                        document.getElementById('errorMessage').innerText = '';
+                        location.assign('/messages');
+                    } else {
+                        const errorMessage = data.message; // Assuming the server sends back an error message
+                        document.getElementById('errorMessage').innerText = errorMessage;
+                    }
+                } catch (error) {
+                    console.error('Error occurred during signup:', error);
+                    document.getElementById('errorMessage').innerText = 'An error occurred during signup. Please try again later.';
+                }
+            });
+        </script>
+    </body>
+</html>
