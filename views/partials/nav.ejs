@@ -1,7 +1,7 @@
 <nav>
     <div class="site-title">
         <% if(user) { %>
-            <a href="/users/profile">
+            <a href="/users/profile/<%= user._id %>">
                 <p><%= user.name %></p>
             </a>
         <% } else { %>
