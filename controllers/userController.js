@@ -24,6 +24,7 @@ exports.users = async (req, res) => {
 }
 
 exports.signupView = async (req, res) => {
+    // for web page
     res.render('users/signup', { title: 'Signup', user: req.user });
 }
 
@@ -52,6 +53,7 @@ exports.signup = asyncErrorHandler(async(req, res, next) =>{
 
 
 exports.loginView = async (req, res) => {
+    // for web page
     res.render('users/index', { title: 'Login', user: req.user });
 }
 
@@ -100,6 +102,9 @@ exports.protect = asyncErrorHandler(async (req, res, next) => {
     // if we use cookie-parser then the about code which i comment no need
     const token = req.cookies.jwt;
     if(!token){
+        // for web page
+        res.status(404).render('404-page', {title: '404-page', user: req.user});
+
         next(new customeError('you are not logged in!', 401))
     }
 
@@ -209,9 +214,11 @@ exports.profile = (req, res, next) => {
     const id = req.params.id;
     User.findById(id)
     .then((result) => {
+        // for web page
         res.render('users/profile', {user: result, title: 'Profile'});
     })
     .catch((err) => {
+        // for web page
         res.status(404).render('404-page', {title: 'Profile not found'});
     });
 };

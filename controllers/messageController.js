@@ -27,8 +27,8 @@ exports.index = async(req, res, next) => {
         }
     ).populate('sender_id').populate('receiver_id');
 
+    // for web page
     const successMessage = [] ;
-
     res.render('messages/index', {successMessage, messages: messages, total: messages.length, title: 'Messages' });
     // res.json({
     //     total: messages.length, 
@@ -45,6 +45,7 @@ exports.createView =  async (req, res) => {
         $or: [{ _id: userId }]
     });
     const users = await User.find({});
+    // for web page
     res.render('messages/create', {users: users, user: user, title: 'Create', user: req.user });
 }
 
@@ -68,9 +69,11 @@ exports.details = (req, res, next) => {
     const id = req.params.id;
     Message.findById(id).populate('sender_id').populate('receiver_id')
     .then((result) => {
+        // for web page
         res.render('messages/details', {message: result, title: 'Message Details'});
     })
     .catch((err) => {
+        // for web page
         res.status(404).render('404-page', {title: 'Message not found'});
     });
 };
