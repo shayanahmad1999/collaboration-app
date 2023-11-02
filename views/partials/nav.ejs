@@ -1,0 +1,19 @@
+<nav>
+    <div class="site-title">
+        <p>Collaboration App</p>
+    </div>
+    <ul>
+        <% if(user) { %>
+            <li><a href="/about">about page</a></li>
+            <li><a href="/messages">Messages</a></li>
+            <li><a href="/messages/create">Create Messages</a></li>
+            <li><a href="#">Tasks</a></li>
+            <li><a href="#">Create Tasks</a></li>
+            <li><a href="/users/logout">Logout</a></li>
+        <% } else { %>
+            <li><a href="/about">about page</a></li>
+            <li> <a href="/users/signup">sign up</a></li>
+            <li><a href="/users/login">Login</a></li>
+        <% } %>
+    </ul>
+</nav>
