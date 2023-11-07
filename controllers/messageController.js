@@ -25,14 +25,13 @@ exports.index = async(req, res, next) => {
         {
             $or: [{ sender_id: userId }, { receiver_id: userId }]
         }
-    ).populate('sender_id').populate('receiver_id');
+    ).populate('sender_id').populate('receiver_id').sort({sent_at: -1});
 
     // for web page
     const successMessage = [] ;
     res.render('messages/index', {successMessage, messages: messages, total: messages.length, title: 'Messages' });
     // res.json({
-    //     total: messages.length, 
-    //     messages
+    //     successMessage, messages, total: messages.length, title: 'Messages'
     // });
 }
 
