@@ -9,6 +9,13 @@ const cookieParser = require('cookie-parser');
 
 const app = express();
 
+// Enable CORS for all requests
+app.use(function(req, res, next) {
+   res.header('Access-Control-Allow-Origin', 'http://localhost:5173'); // Replace with your actual front-end's URL
+   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+   next();
+ });
+
 // register ejs view engine
 app.set('view engine', 'ejs');
 
